@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cleosa Akhtar - The Supreme Mayor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --accent: #ff00c1;
+            --gold: #ffd700;
+            --glass: rgba(15, 15, 30, 0.85);
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            perspective: 1200px;
+        }
+
+        /* Background Layer */
+        .bg-layer {
+            position: fixed;
+            top: -10%; left: -10%;
+            width: 120%; height: 120%;
+            background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                        url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            filter: blur(4px) brightness(0.8);
+            transition: transform 0.2s cubic-bezier(0.1, 0.2, 0.3, 1);
+        }
+
+        /* Main Card */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 45px;
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            position: relative;
+            transform-style: preserve-3d;
+            transition: 0.5s ease;
+        }
+
+        /* Profile Section */
+        .profile-img-container {
+            position: relative;
+            width: 160px; height: 160px;
+            margin: -20px auto 25px;
+        }
+
+        .profile-img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            position: relative; z-index: 2;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .img-halo {
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            background: linear-gradient(45deg, var(--primary), var(--accent), var(--gold));
+            border-radius: 50%;
+            z-index: 1;
+            filter: blur(15px);
+            animation: spin 5s linear infinite;
+        }
+
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .name-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--primary), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .mayor-rank {
+            color: var(--gold);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
+        }
+
+        .stat-label { font-size: 0.65rem; color: #888; text-transform: uppercase; }
+        .stat-value { font-size: 0.85rem; display: block; font-weight: 600; color: #eee; }
+
+        /* Buttons Section */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 16px;
+            border-radius: 18px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .btn-award {
+            background: linear-gradient(45deg, var(--gold), #ff8c00);
+            color: #000;
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-insta {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            filter: brightness(1.1);
+        }
+
+        .btn-insta:hover {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            border-color: transparent;
+        }
+
+        /* Overlay & Animasi Menarik Saat Dibuka */
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            /* Animasi masuk */
+            animation: fadeInOverlay 0.5s ease forwards;
+        }
+
+        .award-content {
+            border: 2px solid var(--gold);
+            padding: 40px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.02);
+            transform: scale(0.7);
+            opacity: 0;
+            animation: popUpAward 0.6s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards;
+            animation-delay: 0.1s;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes popUpAward {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer" id="parallaxBg"></div>
+
+    <div class="card" id="mainCard">
+        <div class="profile-img-container">
+            <div class="img-halo"></div>
+            <img src="foto saya.jpeg" alt="Cleosa Akhtar" class="profile-img">
+        </div>
+
+        <h1 class="name-title">Cleosa Akhtar R.K.</h1>
+        <span class="mayor-rank">Level: SMA</span>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-label">TINGKAT KEBINGUNGAN</span>
+                <span class="stat-value">70%</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">TINGKAT BAHAGIA</span>
+                <span class="stat-value">80.9% (GOOD)</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">STATUS PENDIDIKAN</span>
+                <span class="stat-value">SMAN 1 Magetan</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">KELAS</span>
+                <span class="stat-value">12.8</span>
+            </div>
+			<div class="stat-item">
+                <span class="stat-label">HOBBY</span>
+                <span class="stat-value">MAKAN</span>
+            </div>
+			<div class="stat-item">
+                <span class="stat-label">MOTTO HIDUP</span>
+                <span class="stat-value">SEMUA JALAN MENGARAH PADAKU</span>
+            </div>
+            <div class="stat-item" style="grid-column: span 2;">
+                <span class="stat-label">TUJUAN DI MASA DEPAN</span>
+                <span class="stat-value">MEMBUAT SEMUA ORANG BAHAGIA TERMASUK DIRI SENDIRI 🏗️</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-award" onclick="showAward()">
+                <i class="fas fa-crown"></i> PENGHARGAAN TAHUN INI
+            </button>
+            <a href="https://www.instagram.com/ciosa_aa" target="_blank" class="btn btn-insta">
+                <i class="fab fa-instagram"></i> @ciosa_aa
+            </a>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="this.style.display='none'">
+        <div class="award-content">
+            <h1 style="color: var(--gold); font-size: 2.5rem; margin-bottom: 20px;">SERTIFIKAT</h1>
+            <p style="color: white; line-height: 1.6; font-size: 1.1rem;">
+                Dianugerahkan kepada <strong>Cleosa Akhtar Ruwayfi Kusuma</strong><br>
+                Atas keberhasilan menjalani kelas 12 dengan bahagia.
+            </p>
+            <p style="color: var(--accent); margin-top: 30px; font-weight: 800; letter-spacing: 5px;">RANK: GOOD</p>
+        </div>
+        <p style="color: #666; margin-top: 30px; font-size: 0.8rem;">(Klik di mana saja untuk kembali ke Realitas)</p>
+    </div>
+
+    <script>
+        // Smooth Parallax
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth/2) / 35;
+            const moveY = (e.clientY - window.innerHeight/2) / 35;
+            document.getElementById('parallaxBg').style.transform = `scale(1.1) translate(${moveX}px, ${moveY}px)`;
+            const cardRotateX = (window.innerHeight/2 - e.clientY) / 25;
+            const cardRotateY = (e.clientX - window.innerWidth/2) / 25;
+            document.getElementById('mainCard').style.transform = `rotateX(${cardRotateX}deg) rotateY(${cardRotateY}deg)`;
+        });
+
+        // Award Logic dengan Perbaikan Animasi Masuk
+        function showAward() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = 'flex';
+            
+            // Trigger ulang animasi CSS dengan menghapus dan menambah element jika perlu, 
+            // tapi di sini kita cukup pastikan display flex memicu keyframes.
+
+            const end = Date.now() + 3000;
+            const colors = ['#00d2ff', '#ff00c1', '#ffd700'];
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 60,
+                    origin: { x: 0, y: 0.6 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 60,
+                    origin: { x: 1, y: 0.6 },
+                    colors: colors
+                });
+
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    </script>
+</body>
+</html>
